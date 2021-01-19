@@ -6,10 +6,33 @@ struct Ratio <: Real
 
 	function Ratio(n, d)
 		let s = (d >= 0 ? 1 : -1), g = gcd(n, d)
-			return new(s * n ÷ g, abs(d) ÷ g)
+            if d == 0
+                return error("Argument of 'denominator' cannot be zero")
+            else
+                return new(s * n ÷ g, abs(d) ÷ g)
+            end
 		end
 	end
 end
+
+struct Mixed_Frac <: Real
+    num::Int
+	den::Int
+    ing::Int
+
+	function Mixed_Frac(r::Ratio, itg=0)
+        let n = r.numer, d = r.denom,
+			s = (d >= 0 ? (n >= 0 ? 1 : -1) : (n >= 0 ? -1 : 1)),
+            d = abs(d), itg = abs(itg), n = abs(n), g = div(n, d), itg = s * g
+            if d > n
+                return new(s * n, d, itg)
+            else
+                return new(s * (n - g * d), d, itg)
+            end
+        end
+    end
+end
+
 
 begin
     numer(r::Ratio) = r.numer
