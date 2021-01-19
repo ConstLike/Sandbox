@@ -16,29 +16,81 @@ begin
     denom(r::Ratio) = r.denom
 
     function Base.:+(x::Ratio, y::Ratio)
-    	Ratio(numer(x) * denom(y) + numer(y) * denom(x), denom(x) * denom(y))
+    	Ratio(numer(x) * denom(y) + numer(y) * denom(x),
+              denom(x) * denom(y))
+    end
+    function Base.:+(x::Ratio, y::Integer)
+        let y = Ratio(y, 1)
+            Ratio(numer(x) * denom(y) + numer(y) * denom(x),
+                  denom(x) * denom(y))
+        end
+    end
+    function Base.:+(x::Integer, y::Ratio)
+        let x = Ratio(x, 1)
+            Ratio(numer(x) * denom(y) + numer(y) * denom(x),
+                  denom(x) * denom(y))
+        end
     end
 
     function Base.:-(x::Ratio, y::Ratio)
-    	Ratio(numer(x) * denom(y) - numer(y) * denom(x), denom(x) * denom(y))
+        Ratio(numer(x) * denom(y) - numer(y) * denom(x),
+              denom(x) * denom(y))
+    end
+    function Base.:-(x::Ratio, y::Integer)
+        let y = Ratio(y, 1)
+            Ratio(numer(x) * denom(y) - numer(y) * denom(x),
+                  denom(x) * denom(y))
+        end
+    end
+    function Base.:-(x::Integer, y::Ratio)
+        let x = Ratio(x, 1)
+            Ratio(numer(x) * denom(y) - numer(y) * denom(x),
+                  denom(x) * denom(y))
+        end
     end
 
     function Base.:*(x::Ratio, y::Ratio)
-    	Ratio(numer(x) * numer(y), denom(x) * denom(y))
+    	Ratio(numer(x) * numer(y),
+              denom(x) * denom(y))
+    end
+    function Base.:*(x::Integer, y::Ratio)
+        Ratio(x * numer(y),
+              denom(y))
+    end
+    function Base.:*(x::Ratio, y::Integer)
+        Ratio(numer(x) * y,
+              denom(x))
     end
 
     function Base.:/(x::Ratio, y::Ratio)
-    	Ratio(numer(x) * denom(y), denom(x) * numer(y))
+    	Ratio(numer(x) * denom(y),
+              denom(x) * numer(y))
     end
-
-    Base.:+(x::Integer, y::Ratio) = x * y
-
+    function Base.:/(x::Integer, y::Ratio)
+    	Ratio(x * denom(y),
+              numer(y))
+    end
     function Base.:/(x::Ratio, y::Integer)
-    	Ratio(numer(x) * denom(y), denom(x) * numer(y))
+        Ratio(numer(x),
+              denom(x) * y)
     end
 
     function Base.:(==)(x::Ratio, y::Ratio)
-    	numer(x) * denom(y) == denom(y) * numer(x)
+    	numer(x) * denom(y) == numer(y) * denom(x)
+    end
+    function Base.:(==)(x::Ratio, y::Integer)
+        let y = Ratio(y, 1)
+            numer(x) * denom(y) == numer(y) * denom(x)
+        end
+    end
+    function Base.:(==)(x::Integer, y::Ratio)
+        let x = Ratio(x, 1)
+            numer(x) * denom(y) == numer(y) * denom(x)
+        end
+    end
+
+    function Base.:abs(x::Ratio)
+        Ratio(abs(numer(x)), abs(denom(x)))
     end
 
     Base.show(io::IO, r::Ratio) = print(io, numer(r), '/', denom(r))
